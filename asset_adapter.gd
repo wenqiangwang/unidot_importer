@@ -2621,8 +2621,8 @@ func preprocess_asset(asset_database: Object, pkgasset: Object, tmpdir: String, 
 	var path = pkgasset.orig_pathname
 	var asset_handler: AssetHandler = file_handlers.get(path.get_extension().to_lower(), file_handlers.get("default"))
 	var dres = DirAccess.open("res://")
-	dres.make_dir_recursive(path.get_base_dir())
-	dres.make_dir_recursive(tmpdir + "/" + path.get_base_dir())
+	dres.make_dir_recursive(path.get_base_dir().to_lower())
+	dres.make_dir_recursive(tmpdir + "/" + path.get_base_dir().to_lower())
 	dres.make_dir_recursive(tmpdir + "/" + thread_subdir)
 
 	if pkgasset.metadata_tar_header != null and pkgasset.parsed_meta == null:
@@ -2630,6 +2630,10 @@ func preprocess_asset(asset_database: Object, pkgasset: Object, tmpdir: String, 
 		pkgasset.parsed_meta = asset_database.parse_meta(sf, path)
 		pkgasset.log_debug("Parsing " + path + ": " + str(pkgasset.parsed_meta))
 	if pkgasset.asset_tar_header != null:
+		
+		# Lower case output
+		pkgasset.pathname = pkgasset.pathname.to_lower()
+		
 		var ret_output_path = asset_handler.write_and_preprocess_asset(pkgasset, tmpdir, thread_subdir)
 		if not ret_output_path.is_empty():
 			pkgasset.pathname = ret_output_path
